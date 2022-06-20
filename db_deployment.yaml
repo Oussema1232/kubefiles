@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: db_ex
+  name: db-ex
+
+spec:
+  replicas: 1
+ 
+  selector:
+    matchLabels:
+      app: db_ex
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: db_ex
+    spec:
+      containers:
+      - image: mysql:5.7
+        name: mysql
+        ports:
+           - containerPort: 3306
+        resources: {}
+
+        env:
+           - name: MYSQL_ROOT_PASSWORD
+             valueFrom:
+                 secretKeyRef:
+                    name: app-secret
+                    key: db_password
+           - name: MYSQL_DATABASE
+             value: api_exercice_db
+        volumeMounts:
+           - name: mysql-initdb
+             mountPath: /docker-entrypoint-initdb.d
+           - mountPath: "/var/lib/mysql"
+             subPath: "mysql"
+             name: mysql-data
+      volumes:
+       - name: mysql-initdb
+         configMap:
+             name: db-config
+       - name: mysql-data
+         persistentVolumeClaim:
+             claimName: mysql-data-disk
+
+status: {}

@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: api_ex
+  name: api-ex
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: api_ex
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: api_ex
+    spec:
+      containers:
+      - image: soltan52777394/backendapp:v2
+        name: api-exercise-api-xz2fd
+        resources: {}
+        env:
+           - name: MYSQL_ROOT_PASSWORD
+             valueFrom:
+                 secretKeyRef:
+                    name: app-secret
+                    key: db_password
+           - name: MYSQL_DATABASE
+             value: api_exercice_db
+status: {}
